@@ -1,0 +1,246 @@
+# Documentation for Finals_The_Renegades.py
+
+## Overview
+This program is a **User Management System** built using Tkinter for the graphical user interface (GUI). It allows users to perform basic operations such as signing up, viewing records, searching for records, and deleting records. All data is stored in a text file called `records.txt` for persistence.
+
+## Features
+### 1. Sign Up
+Users can register their personal information:
+- First Name
+- Middle Name (optional)
+- Last Name
+- Birthday (format: YYYY-MM-DD)
+- Gender (Male/Female)
+
+Additional functionalities:
+- Checks for duplicate records before saving.
+- Saves the data to `records.txt`.
+
+### 2. View All Records
+- Displays all saved records in a new window.
+- Uses a monospaced font for better alignment of data.
+
+### 3. Search Record
+- Allows users to search for a record using the **Last Name**.
+- Displays matching records in a text box.
+
+### 4. Remove Record
+- Allows users to delete a record using the **ID**.
+- Updates the `records.txt` file to remove the record.
+
+### 5. Exit
+- Closes the application.
+
+---
+
+## Code Explanation
+### 1. Importing Libraries
+```python
+import tkinter as tk
+from tkinter import messagebox
+import os
+```
+- `tkinter`: Used for creating the GUI components.
+- `messagebox`: Used for showing alert dialogs like error or success messages.
+- `os`: Used for file operations like checking if a file exists.
+
+### 2. File Initialization
+```python
+DATA_FILE = "records.txt"
+
+def initialize_file():
+    if not os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "w") as file:
+            file.write("ID,First Name,Middle Name,Last Name,Birthday,Gender\n")
+```
+- `DATA_FILE`: The name of the text file where all data is stored.
+- `initialize_file()`: Creates `records.txt` if it doesn’t exist and adds a header row.
+
+### 3. File Operations
+#### Save to File
+```python
+def save_to_file(record):
+    with open(DATA_FILE, "a") as file:
+        file.write(",".join(record) + "\n")
+```
+#### Load Records
+```python
+def load_records():
+    with open(DATA_FILE, "r") as file:
+        return file.readlines()[1:]
+```
+- Reads all records from `records.txt`, excluding the header row.
+
+### 4. Sign Up Functionality
+#### Sign Up Window
+```python
+def sign_up():
+    def save_record():
+        ...
+    signup_window = tk.Toplevel(root)
+    ...
+```
+- Opens a new window for the **sign-up form**.
+- Includes input fields for:
+  - First Name
+  - Middle Name
+  - Last Name
+  - Birthday
+  - Gender (Male/Female)
+
+#### Duplicate Check
+```python
+for record in records:
+    fields = record.strip().split(",")
+    if (
+        first_name.lower() == fields[1].lower() and
+        last_name.lower() == fields[3].lower() and
+        birthday == fields[4] and
+        gender.lower() == fields[5].lower()
+    ):
+        messagebox.showerror("Duplicate Record", "This record already exists!")
+        return
+```
+- Ensures a record with the same **First Name, Last Name, Birthday, and Gender** does not exist before saving.
+
+#### Save Record
+```python
+new_id = len(records) + 1
+record = [str(new_id), first_name, middle_name, last_name, birthday, gender]
+save_to_file(record)
+```
+- Generates a **unique ID** for each record.
+- Saves the new record to the file.
+
+### 5. View All Records
+```python
+def view_records():
+    records_window = tk.Toplevel(root)
+    ...
+    records = load_records()
+    for record in records:
+        fields = record.strip().split(",")
+        formatted_record = f"{fields[0]:<5} {fields[1]:<12} {fields[2]:<13} {fields[3]:<12} {fields[4]:<12} {fields[5]:<6}"
+        tk.Label(records_window, text=formatted_record, font=record_font).pack()
+```
+- Opens a new window to **display all records**.
+- Uses **monospaced font** for proper alignment.
+
+### 6. Search Record
+```python
+def search_record():
+    def search():
+        ...
+    search_window = tk.Toplevel(root)
+    ...
+```
+- Opens a window to search for a record by **Last Name**.
+- Displays matching records in a text box.
+
+### 7. Remove Record
+```python
+def remove_record():
+    def delete_record():
+        ...
+    remove_window = tk.Toplevel(root)
+    ...
+```
+- Opens a new window to delete a record using the **ID**.
+- Updates `records.txt` after deletion.
+
+### 8. GUI Setup
+```python
+root = tk.Tk()
+root.title("User Management System")
+root.geometry("400x400")
+
+tk.Label(root, text="Choose an Operation", font=("Arial", 14)).pack(pady=10)
+
+btn_sign_up = tk.Button(root, text="Sign Up", command=sign_up, width=20)
+btn_sign_up.pack(pady=5)
+
+btn_view_records = tk.Button(root, text="View All Records", command=view_records, width=20)
+btn_view_records.pack(pady=5)
+
+btn_search_record = tk.Button(root, text="Search Record", command=search_record, width=20)
+btn_search_record.pack(pady=5)
+
+btn_remove_record = tk.Button(root, text="Remove Record", command=remove_record, width=20)
+btn_remove_record.pack(pady=5)
+
+btn_exit = tk.Button(root, text="Exit", command=root.quit, width=20)
+btn_exit.pack(pady=5)
+
+root.mainloop()
+```
+- The main window contains buttons for each operation:
+  - **Sign Up**
+  - **View All Records**
+  - **Search Record**
+  - **Remove Record**
+  - **Exit**
+
+---
+
+## How to Run
+1. Ensure **Python** is installed.
+2. Save the code as `Finals_The_Renegades.py`.
+3. Run the file using:
+   ```sh
+   python Finals_The_Renegades.py
+   ```
+4. Follow the GUI instructions.
+
+---
+
+## Sample Outputs
+### **Sign Up**
+**Input:**
+```
+First Name: John
+Middle Name: Doe
+Last Name: Smith
+Birthday: 2000-01-01
+Gender: Male
+```
+**Output:**
+```
+Success message: "Record saved successfully!"
+```
+
+### **View All Records**
+```
+ID   First Name   Middle Name   Last Name     Birthday     Gender
+1    John         Doe           Smith         2000-01-01   Male
+```
+
+### **Search Record**
+**Input:**
+```
+Last Name: Smith
+```
+**Output:**
+```
+ID: 1
+First Name: John
+Middle Name: Doe
+Last Name: Smith
+Birthday: 2000-01-01
+Gender: Male
+```
+
+### **Remove Record**
+**Input:**
+```
+ID: 1
+```
+**Output:**
+```
+Success message: "Record with ID 1 removed successfully!"
+```
+
+---
+
+## Conclusion
+This program is a simple **User Management System** demonstrating basic **CRUD operations**. It serves as a beginner-friendly introduction to **Tkinter GUI development** and **file handling in Python**.
+
